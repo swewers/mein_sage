@@ -2784,6 +2784,10 @@ class FunctionField_polymod(FunctionField):
         t = self.hom( [k.gen() for k in ret._intermediate_fields(ret.rational_function_field())] )
         return ret, f, t
 
+    def _factor_univariate_polynomial(self, f, proof=None):
+        from sage.rings.function_field.factor_polynomial_over_function_field import factor_polynomial_over_function_field
+        return factor_polynomial_over_function_field(f)
+
 
 class FunctionField_simple(FunctionField_polymod):
     """
