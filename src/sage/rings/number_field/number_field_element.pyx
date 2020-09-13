@@ -3038,13 +3038,20 @@ cdef class NumberFieldElement(FieldElement):
             False
 
         Note that in relative number fields, this produces the polynomial of
-        the internal representation of this element which might not be what
-        you are looking for::
+        the internal representation of this element::
 
             sage: R.<y> = K[]
             sage: L.<b> = K.extension(y^2 - a)
             sage: b.polynomial()
-            -1/2*x^19 - 1/2*x^17 - 1/2*x^15 - 1/2*x^13 - x^11 - 1/2*x^9 - 1/2*x^7 - 1/2*x^5 - x^3 - 1/2*x
+            x
+
+        In some cases this might not be what you are looking for::
+
+            sage: K.<a> = NumberField(x^2 + x + 1)
+            sage: R.<y> = K[]
+            sage: L.<b> = K.extension(y^2 + y + 2)
+            sage: b.polynomial()
+            1/2*x^3 + 3*x - 1/2
             sage: R(list(b))
             y
 
@@ -4884,9 +4891,16 @@ cdef class NumberFieldElement_relative(NumberFieldElement):
             sage: L.<beta> = NumberField(y^3 + y + alpha)
             sage: latex((beta + zeta)^3) # indirect doctest
             3 \zeta_{12} \beta^{2} + \left(3 \zeta_{12}^{2} - 1\right) \beta - \alpha + \zeta_{12}^{3}
+            sage: L.<b> = NumberField(y^3 + y + alpha, latex_name=r'\beta')
+            sage: latex((b + zeta)^3) # indirect doctest
+            3 \zeta_{12} \beta^{2} + \left(3 \zeta_{12}^{2} - 1\right) \beta - \alpha + \zeta_{12}^{3}
+            sage: M.<c> = L.extension(x^2 - 5, latex_name=r'\gamma')
+            sage: latex(zeta + c) # indirect doctest
+            \gamma + \zeta_{12}
         """
         K = self.number_field()
         R = K.base_field()[K.variable_name()]
+        R._latex_names = K.latex_variable_names()
         return R(self.list())._latex_()
 
     def charpoly(self, var='x'):
